@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsFormsApp1.MnbServiceReference;
 
 namespace WindowsFormsApp1
 {
@@ -15,6 +16,20 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
+            FelevArfolyam();
+        }
+
+        private void FelevArfolyam()
+        {
+            var mnbService = new MNBArfolyamServiceSoapClient();
+            var request = new GetExchangeRatesRequestBody()
+            {
+                currencyNames = "EUR",
+                startDate = "2020-01-01",
+                endDate = "2020-06-30"
+            };
+            var response = mnbService.GetExchangeRates(request);
+            var result = response.GetExchangeRatesResult;
         }
     }
 }
