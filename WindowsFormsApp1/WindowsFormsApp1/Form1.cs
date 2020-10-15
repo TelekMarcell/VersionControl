@@ -20,46 +20,42 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
-            FelevArfolyam();
-            Xmlfgv();
-            Tabla();
+
             dataGridView1.DataSource = Rates;
             chartRateData.DataSource = Rates;
+
+            RefreshData();
         }
 
-            void FelevArfolyam()
+
+        void RefreshData()
+        { 
+            var mnbService = new MNBArfolyamServiceSoapClient();
+            var request = new GetExchangeRatesRequestBody()
             {
-                var mnbService = new MNBArfolyamServiceSoapClient();
-                var request = new GetExchangeRatesRequestBody()
-                {
-                    currencyNames = "EUR",
-                    startDate = "2020-01-01",
-                    endDate = "2020-06-30"
-                };
-                var response = mnbService.GetExchangeRates(request);
-                var result = response.GetExchangeRatesResult;
+                currencyNames = "EUR",
+                startDate = "2020-01-01",
+                endDate = "2020-06-30"
+            };
+            var response = mnbService.GetExchangeRates(request);
+            var result = response.GetExchangeRatesResult;
+
+            var xml = new XmlDocument();
+            xml.LoadXml(result);
+            foreach (XmlElement element in xml.DocumentElement)
+            {
+                var rate = new RateData();
+                Rates.Add(rate);
+                rate.Date = DateTime.Parse(element.GetAttribute("date"));
+                var childElement = (XmlElement)element.ChildNodes[0];
+                rate.Currency = childElement.GetAttribute("curr");
+                var unit = decimal.Parse(childElement.GetAttribute("unit"));
+                var value = decimal.Parse(childElement.InnerText);
+                if (unit != 0)
+                    rate.Value = value / unit;
             }
 
-            void Xmlfgv()
-            {
-                var xml = new XmlDocument();
-                xml.LoadXml(result);
-                foreach (XmlElement element in xml.DocumentElement)
-                {
-                    var rate = new RateData();
-                    Rates.Add(rate);
-                    rate.Date = DateTime.Parse(element.GetAttribute("date"));
-                    var childElement = (XmlElement)element.ChildNodes[0];
-                    rate.Currency = childElement.GetAttribute("curr");
-                    var unit = decimal.Parse(childElement.GetAttribute("unit"));
-                    var value = decimal.Parse(childElement.InnerText);
-                    if (unit != 0)
-                        rate.Value = value / unit;
-                }
-            }
 
-        void Tabla()
-        {
             var series = chartRateData.Series[0];
             series.ChartType = SeriesChartType.Line;
             series.XValueMember = "Date";
@@ -71,8 +67,23 @@ namespace WindowsFormsApp1
             chartArea.AxisX.MajorGrid.Enabled = false;
             chartArea.AxisY.MajorGrid.Enabled = false;
             chartArea.AxisY.IsStartedFromZero = false;
+            dataGridView1.DataSource = Rates;
+            chartRateData.DataSource = Rates;
         }
-     
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void dateTimePicker2_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
     }
 }
 
