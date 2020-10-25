@@ -11,5 +11,6 @@ namespace task07.Entities
         public int BirthYear { get; set; }
         public Gender Gender { get; set; }
         public double DeathProba { get; set; }
+        public byte Age { get; internal set; }
     }
 }
