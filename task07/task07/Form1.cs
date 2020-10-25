@@ -21,12 +21,17 @@ namespace task07
         public Form1()
         {
             InitializeComponent();
+        }
+
+
+        void Simulation()
+        {
             Population = GetPopulation(@"C:\Temp\nép.csv");
             BirthProbabilities = GetBirthProbabilities(@"C:\Temp\születés.csv");
             DeathProbabilities = GetDeathProbabilities(@"C:\Temp\halál.csv");
             for (int year = 2005; year <= 2024; year++)
             {
-                
+
                 for (int i = 0; i < Population.Count; i++)
                 {
                     // Ide jön a szimulációs lépés
@@ -42,7 +47,6 @@ namespace task07
                     string.Format("Év:{0} Fiúk:{1} Lányok:{2}", year, nbrOfMales, nbrOfFemales));
             }
         }
-
         public List<Person> GetPopulation(string csvpath)
         {
             List<Person> population = new List<Person>();
@@ -131,5 +135,14 @@ namespace task07
             }
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Simulation();
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
