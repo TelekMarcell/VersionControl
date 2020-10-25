@@ -10,6 +10,6 @@ namespace task07.Entities
     {
         public int BirthYear { get; set; }
         public int NbrOfChildren { get; set; }
-        public double Probalitily { get; set; }
+        public double BProbalitily { get; set; }
     }
 }
