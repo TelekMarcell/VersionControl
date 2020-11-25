@@ -32,11 +32,6 @@ namespace evolucio
             //:gc.AddPlayer();
             //:gc.Start(true);
 
-            var playerList = from p in gc.GetCurrentPlayers()
-                             orderby p.GetFitness() descending
-                             select p;
-            var topPerformers = playerList.Take(populationSize / 2).ToList();
-
              gc.GameOver += Gc_GameOver;
 
             for (int i = 0; i < populationSize; i++)
@@ -44,6 +39,12 @@ namespace evolucio
                  gc.AddPlayer(nbrOfSteps);
             }
             gc.Start();
+
+
+            var playerList = from p in gc.GetCurrentPlayers()
+                             orderby p.GetFitness() descending
+                             select p;
+            var topPerformers = playerList.Take(populationSize / 2).ToList();
 
             gc.ResetCurrentLevel();
             foreach (var p in topPerformers)
